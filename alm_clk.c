@@ -45,7 +45,7 @@ uint16_t input_read();
 void led_off();
 
 int main(void){
-
+    /*
 	uint8_t rtc_data[7] = {0x00, //0: seconds
 			       0x00,    //1: minutes
 			       0x00,    //2: hours
@@ -54,12 +54,14 @@ int main(void){
 			       0x01,    //5: month
 			       0x15,    //6: year
 	};
+    */
+        uint8_t rtc_data[7];
 	unsigned char digit[4] = {9, 8, 7, 6};
 	uint16_t inputs; //each switch is a bit
 
 	alarm(FALSE); //superstition
 	i2c_init();          // initialize I2C library
-	rtc_write(rtc_data); //write date to rtc
+	//rtc_write(rtc_data); //write date to rtc
 
 	//initialize LED pins
 	DDRD |= (A_SEG + B_SEG + C_SEG + D_SEG + E_SEG + F_SEG + G_SEG + DIG4);
@@ -92,7 +94,6 @@ int main(void){
 }
 
 void draw(unsigned char digit, unsigned char disp){
-
 
 	// turn off selected digit on the display (active high)
 	switch (disp){
@@ -164,8 +165,7 @@ void draw(unsigned char digit, unsigned char disp){
 	}
 	_delay_ms(1); //wait a bit for the LEDs to actually turn on
 	//turn the LEDs off
-	PORTD |= (A_SEG + B_SEG+ C_SEG + D_SEG + E_SEG + F_SEG + G_SEG + DIG4);
-	PORTB |= (DIG1 + DIG2 + DIG3);
+	led_off();
 }
 
 void dummy_read(){
