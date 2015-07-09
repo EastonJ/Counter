@@ -78,17 +78,18 @@ int main(void){
 		i2c_stop();
 		dummy_read(); //Every other read returns invalid data. Hence, this.
 
-		//inputs = input_read();
-		//input_test(inputs);
-		
+		inputs = input_read();
+		input_test(inputs);
+		/*	
 		for(uint8_t i = 4; i !=0; i--){
-			digit[0] = (rtc_data[1] & 0xF0) >> 4; //10 hours^W minutes
-			digit[1] = rtc_data[1] & 0x0F; //1 hours
-			digit[2] = (rtc_data[0] & 0xF0) >> 4; //10 minutes^W seconds
-			digit[3] = rtc_data[0] & 0x0F; //1 minutes
+			digit[0] = (rtc_data[2] & 0xF0) >> 4; //10 hours^W minutes
+			digit[1] = rtc_data[2] & 0x0F; //1 hours
+			digit[2] = (rtc_data[1] & 0xF0) >> 4; //10 minutes^W seconds
+			digit[3] = rtc_data[1] & 0x0F; //1 minutes
 
 			draw(digit[i-1], i);
 		}
+		*/
 	}
 	return 0;
 }
@@ -186,34 +187,32 @@ void rtc_write(uint8_t *data){
 }
 
 void input_test(uint16_t inputs){
-    for(int i=0; i<4; i++){
-	uint8_t tmp = (inputs<<(i*4)) & 0x0F;
-	draw(tmp, i+1);
-	_delay_ms(1);
+    uint8_t tmp[4];
+    tmp[3] = inputs & 0x000F;
+    tmp[2] = (inputs & 0x00F0)>>4;
+    tmp[1] = (inputs & 0x0F00)>>8;
+    tmp[0] = (inputs & 0xF000)>>12;
+    for(int i=4; i>0; i--){
+	draw(tmp[i-1], i);
     }
 }
 
 uint16_t input_read(){
-    //DDRC &= ~(C0 + C1 + C2 + C3); //set as inputs
-    //PORTC &= ~(C0 + C1 + C2 + C3); //tristate
-
-    uint16_t inputs = 0x0000;
+    uint16_t inputs = 0x4F6E; //some random value for debugging
     uint8_t rows[] = {R0, R1, R2, R3};
-
     uint8_t maskC = C0 + C1 + C2 + C3;
     uint8_t maskR = R0 + R1 + R2 + R3;
-    DDRB |= maskR; // set to output
-    DDRC &= ~maskC; // Set to input
+    DDRC &= ~maskC; // Set columns to input
+    PORTC |= maskC; // Activate pull-up resistors on columns (input pins)
+    DDRB |= maskR; // set rows to output
 
-    PORTC |= maskC; // Activate pull-up resistors
-    PORTB |= maskR; // Set rows high
-
-    for(int i=0; i<4; i++){
-	DDRB &= ~rows[i]; //set a row low
+    for(int i=0; i<1; i++){
+	PORTB |= maskR; // Set all rows high
+	PORTB &= ~rows[i]; //set a row low
 	_NOP(); //wait a bit
-	inputs &= ~(PINC & maskC); //read rows
-	if (i < 3)
-	    inputs = inputs<<4;
+	inputs &= ~(PINC & maskC); //read rows and look for zeros
+	//	if (i < 3)
+	//   inputs = inputs<<4;
     }
     return inputs;
 }
