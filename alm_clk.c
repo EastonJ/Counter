@@ -42,6 +42,7 @@ void rtc_write(uint8_t*);
 void alarm(uint8_t);
 void input_test(uint16_t);
 uint16_t input_read();
+void led_off();
 
 int main(void){
 
@@ -56,16 +57,15 @@ int main(void){
 	unsigned char digit[4] = {9, 8, 7, 6};
 	uint16_t inputs; //each switch is a bit
 
+	alarm(FALSE); //superstition
 	i2c_init();          // initialize I2C library
 	rtc_write(rtc_data); //write date to rtc
 
-	while(1){
-		//initialize output pins
-		DDRD |= (A_SEG + B_SEG + C_SEG + D_SEG + E_SEG + F_SEG + G_SEG + DIG4);
-		DDRB |= (DIG1 + DIG2 + DIG3);
+	//initialize LED pins
+	DDRD |= (A_SEG + B_SEG + C_SEG + D_SEG + E_SEG + F_SEG + G_SEG + DIG4);
+	DDRB |= (DIG1 + DIG2 + DIG3);
 
-		PORTD |= (A_SEG + B_SEG+ C_SEG + D_SEG + E_SEG + F_SEG + G_SEG + DIG4);
-		PORTB |= (DIG1 + DIG2 + DIG3);
+	while(1){
 		
 		i2c_start_wait(DS1307+I2C_WRITE);     // set device address and write mode
    		i2c_write(0x00);                      // set register address
@@ -76,19 +76,17 @@ int main(void){
 		i2c_stop();
 		dummy_read(); //Every other read returns invalid data. Hence, this.
 
-		inputs = input_read();
-		input_test(inputs);
+		//inputs = input_read();
+		//input_test(inputs);
 		
-		/*
 		for(uint8_t i = 4; i !=0; i--){
 			digit[0] = (rtc_data[1] & 0xF0) >> 4; //10 hours^W minutes
 			digit[1] = rtc_data[1] & 0x0F; //1 hours
 			digit[2] = (rtc_data[0] & 0xF0) >> 4; //10 minutes^W seconds
 			digit[3] = rtc_data[0] & 0x0F; //1 minutes
 
-			_delay_ms(1); // do not remove
 			draw(digit[i-1], i);
-			}*/
+		}
 	}
 	return 0;
 }
@@ -164,7 +162,8 @@ void draw(unsigned char digit, unsigned char disp){
 		default:
 			break;
 	}
-	//turn it off
+	_delay_ms(1); //wait a bit for the LEDs to actually turn on
+	//turn the LEDs off
 	PORTD |= (A_SEG + B_SEG+ C_SEG + D_SEG + E_SEG + F_SEG + G_SEG + DIG4);
 	PORTB |= (DIG1 + DIG2 + DIG3);
 }
@@ -195,24 +194,39 @@ void input_test(uint16_t inputs){
 }
 
 uint16_t input_read(){
-    uint16_t inputs = 0xFFFF;
+    //DDRC &= ~(C0 + C1 + C2 + C3); //set as inputs
+    //PORTC &= ~(C0 + C1 + C2 + C3); //tristate
+
+    uint16_t inputs = 0x0000;
     uint8_t rows[] = {R0, R1, R2, R3};
-    DDRC &= ~(C0 + C1 + C2 + C3); //set as inputs
-    PORTC &= ~(C0 + C1 + C2 + C3); //tristate
-    _NOP();
+
+    uint8_t maskC = C0 + C1 + C2 + C3;
+    uint8_t maskR = R0 + R1 + R2 + R3;
+    DDRB |= maskR; // set to output
+    DDRC &= ~maskC; // Set to input
+
+    PORTC |= maskC; // Activate pull-up resistors
+    PORTB |= maskR; // Set rows high
+
     for(int i=0; i<4; i++){
-	DDRB |= rows[i];
-	inputs |= PINC & (C0 + C1 + C2 + C3);
-	_NOP();
-	inputs = inputs<<4;
+	DDRB &= ~rows[i]; //set a row low
+	_NOP(); //wait a bit
+	inputs &= ~(PINC & maskC); //read rows
+	if (i < 3)
+	    inputs = inputs<<4;
     }
     return inputs;
 }
 
 void alarm(uint8_t on){
     if (on){
-	PORTB |= BUZZER; // turn on buzzer
+	DDRB |= BUZZER; // turn on buzzer
     }else{
-	PORTB &= ~BUZZER; // turn off buzzer
+	DDRB &= ~BUZZER; // turn off buzzer
     }
+}
+
+void led_off(){
+    PORTD |= (A_SEG + B_SEG + C_SEG + D_SEG + E_SEG + F_SEG + G_SEG + DIG4);
+    PORTB |= (DIG1 + DIG2 + DIG3);
 }
