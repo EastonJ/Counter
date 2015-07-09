@@ -28,25 +28,24 @@ void rtc_write(uint8_t*);
 
 int main(void){
 
-
 	uint8_t rtc_data[7] = {0x00, //0 seconds
-						0x00,    //1 minutes
-						0x00,    //2 hours
-						0x04,    //3 day of week
-						0x14,    //4 day of month
-						0x05,    //5 month
-						0x15,    //6 year
+						0x00,    //1: minutes
+						0x00,    //2: hours
+						0x01,    //3: day of week
+						0x01,    //4: day of month
+						0x01,    //5: month
+						0x15,    //6: year
 	};
+	//unsigned char digit[4] = {9, 8, 7, 6};
 
-	unsigned char digit[4] = {9, 8, 7, 6};
-
+	uint16_t inputs; //each switch is a bit
 
 	i2c_init();          // initialize I2C library
 	rtc_write(rtc_data); //write date to rtc
 
 	while(1){
 		//initialize output pins
-		DDRD |= (A_SEG + B_SEG+ C_SEG + D_SEG + E_SEG + F_SEG + G_SEG + DIG4);
+		DDRD |= (A_SEG + B_SEG + C_SEG + D_SEG + E_SEG + F_SEG + G_SEG + DIG4);
 		DDRB |= (DIG1 + DIG2 + DIG3);
 
 		i2c_start_wait(DS1307+I2C_WRITE);     // set device address and write mode
@@ -161,4 +160,8 @@ void rtc_write(uint8_t *data){
 			i2c_write(data[i]);           //set date
 	}
     i2c_stop(); 
+}
+
+void input_test(){
+
 }

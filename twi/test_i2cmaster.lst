@@ -1,0 +1,216 @@
+   1               		.file	"test_i2cmaster.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   9               		.text
+  10               	.Ltext0:
+ 100               		.section	.text.startup,"ax",@progbits
+ 102               	.global	main
+ 104               	main:
+ 105               		.stabd	46,0,0
+   1:test_i2cmaster.c **** /****************************************************************************
+   2:test_i2cmaster.c **** Title:    Access serial EEPROM 24C02 using I2C interace
+   3:test_i2cmaster.c **** Author:   Peter Fleury <pfleury@gmx.ch> http://jump.to/fleury
+   4:test_i2cmaster.c **** File:     $Id: test_i2cmaster.c,v 1.2 2003/12/06 17:07:18 peter Exp $
+   5:test_i2cmaster.c **** Software: AVR-GCC 3.3
+   6:test_i2cmaster.c **** Hardware: AT90S8515 at 4 Mhz, any AVR device can be used
+   7:test_i2cmaster.c **** 
+   8:test_i2cmaster.c **** Description:
+   9:test_i2cmaster.c ****     This example shows how the I2C library i2cmaster.S can be used to 
+  10:test_i2cmaster.c ****     access a serial eeprom.
+  11:test_i2cmaster.c ****     Based on Atmel Application Note AVR300, adapted to AVR-GCC C interface
+  12:test_i2cmaster.c **** 
+  13:test_i2cmaster.c **** *****************************************************************************/
+  14:test_i2cmaster.c **** #include <avr/io.h>
+  15:test_i2cmaster.c **** #include "i2cmaster.h"
+  16:test_i2cmaster.c **** 
+  17:test_i2cmaster.c **** 
+  18:test_i2cmaster.c **** #define Dev24C02  0xA2      // device address of EEPROM 24C02, see datasheet
+  19:test_i2cmaster.c **** 
+  20:test_i2cmaster.c **** 
+  21:test_i2cmaster.c **** int main(void)
+  22:test_i2cmaster.c **** {
+ 107               	.LM0:
+ 108               	.LFBB1:
+ 109 0000 CF93      		push r28
+ 110 0002 DF93      		push r29
+ 111 0004 1F92      		push __zero_reg__
+ 112 0006 CDB7      		in r28,__SP_L__
+ 113 0008 DEB7      		in r29,__SP_H__
+ 114               	/* prologue: function */
+ 115               	/* frame size = 1 */
+ 116               	/* stack size = 3 */
+ 117               	.L__stack_usage = 3
+  23:test_i2cmaster.c ****     unsigned char ret;
+  24:test_i2cmaster.c ****     
+  25:test_i2cmaster.c **** 
+  26:test_i2cmaster.c ****     DDRB  = 0xff;                              // use all pins on port B for output 
+ 119               	.LM1:
+ 120 000a 8FEF      		ldi r24,lo8(-1)
+ 121 000c 84B9      		out 0x4,r24
+  27:test_i2cmaster.c ****     PORTB = 0xff;                              // (active low LED's )
+ 123               	.LM2:
+ 124 000e 85B9      		out 0x5,r24
+  28:test_i2cmaster.c **** 
+  29:test_i2cmaster.c ****     i2c_init();                                // init I2C interface
+ 126               	.LM3:
+ 127 0010 0E94 0000 		call i2c_init
+  30:test_i2cmaster.c **** 
+  31:test_i2cmaster.c ****     /* write 0x75 to eeprom address 0x05 (Byte Write) */
+  32:test_i2cmaster.c ****     ret = i2c_start(Dev24C02+I2C_WRITE);       // set device address and write mode
+ 129               	.LM4:
+ 130 0014 82EA      		ldi r24,lo8(-94)
+ 131 0016 0E94 0000 		call i2c_start
+  33:test_i2cmaster.c ****     if ( ret ) {
+ 133               	.LM5:
+ 134 001a 8823      		tst r24
+ 135 001c 01F0      		breq .L2
+  34:test_i2cmaster.c ****         /* failed to issue start condition, possibly no device found */
+  35:test_i2cmaster.c ****         i2c_stop();
+ 137               	.LM6:
+ 138 001e 0E94 0000 		call i2c_stop
+  36:test_i2cmaster.c ****         PORTB=0x00;                            // activate all 8 LED to show error */
+ 140               	.LM7:
+ 141 0022 15B8      		out 0x5,__zero_reg__
+ 142 0024 00C0      		rjmp .L3
+ 143               	.L2:
+  37:test_i2cmaster.c ****     }else {
+  38:test_i2cmaster.c ****         /* issuing start condition ok, device accessible */
+  39:test_i2cmaster.c ****         i2c_write(0x05);                       // write address = 5
+ 145               	.LM8:
+ 146 0026 85E0      		ldi r24,lo8(5)
+ 147 0028 0E94 0000 		call i2c_write
+  40:test_i2cmaster.c ****         i2c_write(0x75);                       // ret=0 -> Ok, ret=1 -> no ACK 
+ 149               	.LM9:
+ 150 002c 85E7      		ldi r24,lo8(117)
+ 151 002e 0E94 0000 		call i2c_write
+  41:test_i2cmaster.c ****         i2c_stop();                            // set stop conditon = release bus
+ 153               	.LM10:
+ 154 0032 0E94 0000 		call i2c_stop
+  42:test_i2cmaster.c **** 
+  43:test_i2cmaster.c ****         /* write ok, read value back from eeprom address 0x05, wait until 
+  44:test_i2cmaster.c ****            the device is no longer busy from the previous write operation */
+  45:test_i2cmaster.c ****         i2c_start_wait(Dev24C02+I2C_WRITE);     // set device address and write mode
+ 156               	.LM11:
+ 157 0036 82EA      		ldi r24,lo8(-94)
+ 158 0038 0E94 0000 		call i2c_start_wait
+  46:test_i2cmaster.c ****         i2c_write(0x05);                        // write address = 5
+ 160               	.LM12:
+ 161 003c 85E0      		ldi r24,lo8(5)
+ 162 003e 0E94 0000 		call i2c_write
+  47:test_i2cmaster.c ****         i2c_rep_start(Dev24C02+I2C_READ);       // set device address and read mode
+ 164               	.LM13:
+ 165 0042 83EA      		ldi r24,lo8(-93)
+ 166 0044 0E94 0000 		call i2c_rep_start
+  48:test_i2cmaster.c ****         ret = i2c_readNak();                    // read one byte
+ 168               	.LM14:
+ 169 0048 0E94 0000 		call i2c_readNak
+  49:test_i2cmaster.c ****         i2c_stop();
+ 171               	.LM15:
+ 172 004c 8983      		std Y+1,r24
+ 173 004e 0E94 0000 		call i2c_stop
+  50:test_i2cmaster.c ****         
+  51:test_i2cmaster.c ****         PORTB = ~ret;                           // output byte on the LED's
+ 175               	.LM16:
+ 176 0052 8981      		ldd r24,Y+1
+ 177 0054 8095      		com r24
+ 178 0056 85B9      		out 0x5,r24
+  52:test_i2cmaster.c **** 
+  53:test_i2cmaster.c ****         /* write 0x70,0x71,072,073 to eeprom address 0x00..0x03 (Page Write),
+  54:test_i2cmaster.c ****            wait until the device is no longer busy from the previous write operation */
+  55:test_i2cmaster.c ****         i2c_start_wait(Dev24C02+I2C_WRITE);     // set device address and write mode
+ 180               	.LM17:
+ 181 0058 82EA      		ldi r24,lo8(-94)
+ 182 005a 0E94 0000 		call i2c_start_wait
+  56:test_i2cmaster.c ****         i2c_write(0x00);                        // write start address = 0
+ 184               	.LM18:
+ 185 005e 80E0      		ldi r24,0
+ 186 0060 0E94 0000 		call i2c_write
+  57:test_i2cmaster.c ****         i2c_write(0x70);                        // write data to address 0
+ 188               	.LM19:
+ 189 0064 80E7      		ldi r24,lo8(112)
+ 190 0066 0E94 0000 		call i2c_write
+  58:test_i2cmaster.c ****         i2c_write(0x71);                        //    "    "   "    "    1
+ 192               	.LM20:
+ 193 006a 81E7      		ldi r24,lo8(113)
+ 194 006c 0E94 0000 		call i2c_write
+  59:test_i2cmaster.c ****         i2c_write(0x72);                        //    "    "   "    "    2
+ 196               	.LM21:
+ 197 0070 82E7      		ldi r24,lo8(114)
+ 198 0072 0E94 0000 		call i2c_write
+  60:test_i2cmaster.c ****         i2c_write(0x74);                        //    "    "   "    "    3
+ 200               	.LM22:
+ 201 0076 84E7      		ldi r24,lo8(116)
+ 202 0078 0E94 0000 		call i2c_write
+  61:test_i2cmaster.c ****         i2c_stop();                             // set stop conditon = release bus
+ 204               	.LM23:
+ 205 007c 0E94 0000 		call i2c_stop
+  62:test_i2cmaster.c ****     
+  63:test_i2cmaster.c ****         /* write ok, read value back from eeprom address 0..3 (Sequencial Read),
+  64:test_i2cmaster.c ****            wait until the device is no longer busy from the previous write operation */
+  65:test_i2cmaster.c ****         i2c_start_wait(Dev24C02+I2C_WRITE);      // set device address and write mode
+ 207               	.LM24:
+ 208 0080 82EA      		ldi r24,lo8(-94)
+ 209 0082 0E94 0000 		call i2c_start_wait
+  66:test_i2cmaster.c ****         i2c_write(0x00);                         // write address = 0
+ 211               	.LM25:
+ 212 0086 80E0      		ldi r24,0
+ 213 0088 0E94 0000 		call i2c_write
+  67:test_i2cmaster.c ****         i2c_rep_start(Dev24C02+I2C_READ);        // set device address and read mode
+ 215               	.LM26:
+ 216 008c 83EA      		ldi r24,lo8(-93)
+ 217 008e 0E94 0000 		call i2c_rep_start
+  68:test_i2cmaster.c ****         ret = i2c_readAck();                       // read one byte form address 0
+ 219               	.LM27:
+ 220 0092 0E94 0000 		call i2c_readAck
+  69:test_i2cmaster.c ****         ret = i2c_readAck();                       //  "    "    "    "     "    1
+ 222               	.LM28:
+ 223 0096 0E94 0000 		call i2c_readAck
+  70:test_i2cmaster.c ****         ret = i2c_readAck();                       //  "    "    "    "     "    2
+ 225               	.LM29:
+ 226 009a 0E94 0000 		call i2c_readAck
+  71:test_i2cmaster.c ****         ret = i2c_readNak();                       //  "    "    "    "     "    3
+ 228               	.LM30:
+ 229 009e 0E94 0000 		call i2c_readNak
+  72:test_i2cmaster.c ****         i2c_stop();                              // set stop condition = release bus
+ 231               	.LM31:
+ 232 00a2 8983      		std Y+1,r24
+ 233 00a4 0E94 0000 		call i2c_stop
+  73:test_i2cmaster.c ****     
+  74:test_i2cmaster.c ****         PORTB = ~ret;                            // output byte on the LED's        
+ 235               	.LM32:
+ 236 00a8 8981      		ldd r24,Y+1
+ 237 00aa 8095      		com r24
+ 238 00ac 85B9      		out 0x5,r24
+ 239               	.L3:
+ 240               	.L4:
+  75:test_i2cmaster.c ****     }
+  76:test_i2cmaster.c ****     
+  77:test_i2cmaster.c ****     for(;;);	
+ 242               	.LM33:
+ 243 00ae 00C0      		rjmp .L4
+ 245               	.Lscope1:
+ 247               		.stabd	78,0,0
+ 248               		.text
+ 250               	.Letext0:
+ 251               		.ident	"GCC: (GNU) 4.9.2 20141224 (prerelease)"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 test_i2cmaster.c
+     /tmp/ccCEb7mz.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccCEb7mz.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccCEb7mz.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccCEb7mz.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccCEb7mz.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccCEb7mz.s:104    .text.startup:0000000000000000 main
+
+UNDEFINED SYMBOLS
+i2c_init
+i2c_start
+i2c_stop
+i2c_write
+i2c_start_wait
+i2c_rep_start
+i2c_readNak
+i2c_readAck

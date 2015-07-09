@@ -1,0 +1,468 @@
+
+test_i2cmaster.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000000  00800100  00000202  00000276  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         00000202  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .stab         00000bf4  00000000  00000000  00000278  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      00000c03  00000000  00000000  00000e6c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .comment      00000027  00000000  00000000  00001a6f  2**0
+                  CONTENTS, READONLY
+  5 .debug_info   000005f4  00000000  00000000  00001a96  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000005a2  00000000  00000000  0000208a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   0000001d  00000000  00000000  0000262c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    00000208  00000000  00000000  00002649  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
+   4:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+   8:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+   c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  10:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  14:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  18:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  1c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  20:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  24:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  28:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  2c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  30:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  34:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  38:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  3c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  40:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  44:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  48:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  4c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  50:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  54:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  58:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  5c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  60:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+  64:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+
+00000068 <__ctors_end>:
+  68:	11 24       	eor	r1, r1
+  6a:	1f be       	out	0x3f, r1	; 63
+  6c:	cf ef       	ldi	r28, 0xFF	; 255
+  6e:	d8 e0       	ldi	r29, 0x08	; 8
+  70:	de bf       	out	0x3e, r29	; 62
+  72:	cd bf       	out	0x3d, r28	; 61
+  74:	0e 94 a7 00 	call	0x14e	; 0x14e <main>
+  78:	0c 94 ff 00 	jmp	0x1fe	; 0x1fe <_exit>
+
+0000007c <__bad_interrupt>:
+  7c:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000080 <i2c_delay_T2>:
+;*************************************************************************
+	.stabs	"",100,0,0,i2c_delay_T2
+	.stabs	"i2cmaster.S",100,0,0,i2c_delay_T2
+	.func i2c_delay_T2	; delay 5.0 microsec with 4 Mhz crystal	
+i2c_delay_T2:        ; 4 cycles
+	rjmp 1f      ; 2   "
+  80:	00 c0       	rjmp	.+0      	; 0x82 <i2c_delay_T2+0x2>
+1:	rjmp 2f      ; 2   "
+  82:	00 c0       	rjmp	.+0      	; 0x84 <i2c_delay_T2+0x4>
+2:	rjmp 3f      ; 2   "
+  84:	00 c0       	rjmp	.+0      	; 0x86 <i2c_delay_T2+0x6>
+3:	rjmp 4f      ; 2   "
+  86:	00 c0       	rjmp	.+0      	; 0x88 <i2c_delay_T2+0x8>
+4:	rjmp 5f      ; 2   "
+  88:	00 c0       	rjmp	.+0      	; 0x8a <i2c_delay_T2+0xa>
+5: 	rjmp 6f      ; 2   "
+  8a:	00 c0       	rjmp	.+0      	; 0x8c <i2c_delay_T2+0xc>
+6:	nop          ; 1   "
+  8c:	00 00       	nop
+	ret          ; 3   "
+  8e:	08 95       	ret
+
+00000090 <i2c_init>:
+; extern void i2c_init(void)
+;*************************************************************************
+	.global i2c_init
+	.func i2c_init
+i2c_init:
+	cbi SDA_DDR,SDA		;release SDA
+  90:	54 98       	cbi	0x0a, 4	; 10
+	cbi SCL_DDR,SCL		;release SCL
+  92:	55 98       	cbi	0x0a, 5	; 10
+	cbi SDA_OUT,SDA
+  94:	5c 98       	cbi	0x0b, 4	; 11
+	cbi SCL_OUT,SCL
+  96:	5d 98       	cbi	0x0b, 5	; 11
+	ret
+  98:	08 95       	ret
+
+0000009a <i2c_start>:
+;*************************************************************************
+
+	.global i2c_start
+	.func   i2c_start
+i2c_start:
+	sbi 	SDA_DDR,SDA	;force SDA low
+  9a:	54 9a       	sbi	0x0a, 4	; 10
+	rcall 	i2c_delay_T2	;delay T/2
+  9c:	f1 df       	rcall	.-30     	; 0x80 <i2c_delay_T2>
+	
+	rcall 	i2c_write	;write address
+  9e:	1d d0       	rcall	.+58     	; 0xda <i2c_write>
+	ret
+  a0:	08 95       	ret
+
+000000a2 <i2c_rep_start>:
+;*************************************************************************
+
+	.global i2c_rep_start
+	.func	i2c_rep_start
+i2c_rep_start:
+	sbi	SCL_DDR,SCL	;force SCL low
+  a2:	55 9a       	sbi	0x0a, 5	; 10
+	rcall 	i2c_delay_T2	;delay  T/2
+  a4:	ed df       	rcall	.-38     	; 0x80 <i2c_delay_T2>
+	cbi	SDA_DDR,SDA	;release SDA
+  a6:	54 98       	cbi	0x0a, 4	; 10
+	rcall	i2c_delay_T2	;delay T/2
+  a8:	eb df       	rcall	.-42     	; 0x80 <i2c_delay_T2>
+	cbi	SCL_DDR,SCL	;release SCL
+  aa:	55 98       	cbi	0x0a, 5	; 10
+	rcall 	i2c_delay_T2	;delay  T/2
+  ac:	e9 df       	rcall	.-46     	; 0x80 <i2c_delay_T2>
+	sbi 	SDA_DDR,SDA	;force SDA low
+  ae:	54 9a       	sbi	0x0a, 4	; 10
+	rcall 	i2c_delay_T2	;delay	T/2
+  b0:	e7 df       	rcall	.-50     	; 0x80 <i2c_delay_T2>
+	
+	rcall	i2c_write	;write address
+  b2:	13 d0       	rcall	.+38     	; 0xda <i2c_write>
+	ret
+  b4:	08 95       	ret
+
+000000b6 <i2c_start_wait>:
+;*************************************************************************
+
+	.global i2c_start_wait
+	.func   i2c_start_wait
+i2c_start_wait:
+	mov	__tmp_reg__,r24
+  b6:	08 2e       	mov	r0, r24
+
+000000b8 <i2c_start_wait1>:
+i2c_start_wait1:
+	sbi 	SDA_DDR,SDA	;force SDA low
+  b8:	54 9a       	sbi	0x0a, 4	; 10
+	rcall 	i2c_delay_T2	;delay T/2
+  ba:	e2 df       	rcall	.-60     	; 0x80 <i2c_delay_T2>
+	mov	r24,__tmp_reg__
+  bc:	80 2d       	mov	r24, r0
+	rcall 	i2c_write	;write address
+  be:	0d d0       	rcall	.+26     	; 0xda <i2c_write>
+	tst	r24		;if device not busy -> done
+  c0:	88 23       	and	r24, r24
+	breq	i2c_start_wait_done
+  c2:	11 f0       	breq	.+4      	; 0xc8 <i2c_start_wait_done>
+	rcall	i2c_stop	;terminate write operation
+  c4:	02 d0       	rcall	.+4      	; 0xca <i2c_stop>
+	rjmp	i2c_start_wait1	;device busy, poll ack again
+  c6:	f8 cf       	rjmp	.-16     	; 0xb8 <i2c_start_wait1>
+
+000000c8 <i2c_start_wait_done>:
+i2c_start_wait_done:
+	ret
+  c8:	08 95       	ret
+
+000000ca <i2c_stop>:
+;*************************************************************************
+
+	.global	i2c_stop
+	.func	i2c_stop
+i2c_stop:
+	sbi	SCL_DDR,SCL	;force SCL low
+  ca:	55 9a       	sbi	0x0a, 5	; 10
+	sbi	SDA_DDR,SDA	;force SDA low
+  cc:	54 9a       	sbi	0x0a, 4	; 10
+	rcall	i2c_delay_T2	;delay T/2
+  ce:	d8 df       	rcall	.-80     	; 0x80 <i2c_delay_T2>
+	cbi	SCL_DDR,SCL	;release SCL
+  d0:	55 98       	cbi	0x0a, 5	; 10
+	rcall	i2c_delay_T2	;delay T/2
+  d2:	d6 df       	rcall	.-84     	; 0x80 <i2c_delay_T2>
+	cbi	SDA_DDR,SDA	;release SDA
+  d4:	54 98       	cbi	0x0a, 4	; 10
+	rcall	i2c_delay_T2	;delay T/2
+  d6:	d4 df       	rcall	.-88     	; 0x80 <i2c_delay_T2>
+	ret
+  d8:	08 95       	ret
+
+000000da <i2c_write>:
+;	data = r24,  return = r25(=0):r24
+;*************************************************************************
+	.global i2c_write
+	.func	i2c_write
+i2c_write:
+	sec			;set carry flag
+  da:	08 94       	sec
+	rol 	r24		;shift in carry and out bit one
+  dc:	88 1f       	adc	r24, r24
+	rjmp	i2c_write_first
+  de:	01 c0       	rjmp	.+2      	; 0xe2 <i2c_write_first>
+
+000000e0 <i2c_write_bit>:
+i2c_write_bit:
+	lsl	r24		;if transmit register empty
+  e0:	88 0f       	add	r24, r24
+
+000000e2 <i2c_write_first>:
+i2c_write_first:
+	breq	i2c_get_ack
+  e2:	59 f0       	breq	.+22     	; 0xfa <i2c_get_ack>
+	sbi	SCL_DDR,SCL	;force SCL low
+  e4:	55 9a       	sbi	0x0a, 5	; 10
+	brcc	i2c_write_low
+  e6:	18 f4       	brcc	.+6      	; 0xee <i2c_write_low>
+	nop
+  e8:	00 00       	nop
+	cbi	SDA_DDR,SDA	;release SDA
+  ea:	54 98       	cbi	0x0a, 4	; 10
+	rjmp	i2c_write_high
+  ec:	02 c0       	rjmp	.+4      	; 0xf2 <i2c_write_high>
+
+000000ee <i2c_write_low>:
+i2c_write_low:
+	sbi	SDA_DDR,SDA	;force SDA low
+  ee:	54 9a       	sbi	0x0a, 4	; 10
+	rjmp	i2c_write_high
+  f0:	00 c0       	rjmp	.+0      	; 0xf2 <i2c_write_high>
+
+000000f2 <i2c_write_high>:
+i2c_write_high:
+	rcall 	i2c_delay_T2	;delay T/2
+  f2:	c6 df       	rcall	.-116    	; 0x80 <i2c_delay_T2>
+	cbi	SCL_DDR,SCL	;release SCL
+  f4:	55 98       	cbi	0x0a, 5	; 10
+	rcall	i2c_delay_T2	;delay T/2
+  f6:	c4 df       	rcall	.-120    	; 0x80 <i2c_delay_T2>
+	rjmp	i2c_write_bit
+  f8:	f3 cf       	rjmp	.-26     	; 0xe0 <i2c_write_bit>
+
+000000fa <i2c_get_ack>:
+	
+i2c_get_ack:
+	sbi	SCL_DDR,SCL	;force SCL low
+  fa:	55 9a       	sbi	0x0a, 5	; 10
+	cbi	SDA_DDR,SDA	;release SDA
+  fc:	54 98       	cbi	0x0a, 4	; 10
+	rcall	i2c_delay_T2	;delay T/2
+  fe:	c0 df       	rcall	.-128    	; 0x80 <i2c_delay_T2>
+	cbi	SCL_DDR,SCL	;release SCL
+ 100:	55 98       	cbi	0x0a, 5	; 10
+
+00000102 <i2c_ack_wait>:
+i2c_ack_wait:
+	sbis	SCL_IN,SCL	;wait SCL high (in case wait states are inserted)
+ 102:	4d 9b       	sbis	0x09, 5	; 9
+	rjmp	i2c_ack_wait
+ 104:	fe cf       	rjmp	.-4      	; 0x102 <i2c_ack_wait>
+	
+	clr	r24		;return 0
+ 106:	88 27       	eor	r24, r24
+	sbic	SDA_IN,SDA	;if SDA high -> return 1
+ 108:	4c 99       	sbic	0x09, 4	; 9
+	ldi	r24,1
+ 10a:	81 e0       	ldi	r24, 0x01	; 1
+	rcall	i2c_delay_T2	;delay T/2
+ 10c:	b9 df       	rcall	.-142    	; 0x80 <i2c_delay_T2>
+	clr	r25
+ 10e:	99 27       	eor	r25, r25
+	ret
+ 110:	08 95       	ret
+
+00000112 <i2c_readNak>:
+ 112:	88 27       	eor	r24, r24
+ 114:	01 c0       	rjmp	.+2      	; 0x118 <i2c_read>
+
+00000116 <i2c_readAck>:
+ 116:	81 e0       	ldi	r24, 0x01	; 1
+
+00000118 <i2c_read>:
+ 118:	71 e0       	ldi	r23, 0x01	; 1
+
+0000011a <i2c_read_bit>:
+ 11a:	55 9a       	sbi	0x0a, 5	; 10
+ 11c:	54 98       	cbi	0x0a, 4	; 10
+ 11e:	b0 df       	rcall	.-160    	; 0x80 <i2c_delay_T2>
+ 120:	55 98       	cbi	0x0a, 5	; 10
+ 122:	ae df       	rcall	.-164    	; 0x80 <i2c_delay_T2>
+
+00000124 <i2c_read_stretch>:
+ 124:	4d 9b       	sbis	0x09, 5	; 9
+ 126:	fe cf       	rjmp	.-4      	; 0x124 <i2c_read_stretch>
+ 128:	88 94       	clc
+ 12a:	4c 99       	sbic	0x09, 4	; 9
+ 12c:	08 94       	sec
+ 12e:	77 1f       	adc	r23, r23
+ 130:	a0 f7       	brcc	.-24     	; 0x11a <i2c_read_bit>
+
+00000132 <i2c_put_ack>:
+ 132:	55 9a       	sbi	0x0a, 5	; 10
+ 134:	81 30       	cpi	r24, 0x01	; 1
+ 136:	11 f0       	breq	.+4      	; 0x13c <i2c_put_ack_low>
+ 138:	54 98       	cbi	0x0a, 4	; 10
+ 13a:	01 c0       	rjmp	.+2      	; 0x13e <i2c_put_ack_high>
+
+0000013c <i2c_put_ack_low>:
+ 13c:	54 9a       	sbi	0x0a, 4	; 10
+
+0000013e <i2c_put_ack_high>:
+ 13e:	a0 df       	rcall	.-192    	; 0x80 <i2c_delay_T2>
+ 140:	55 98       	cbi	0x0a, 5	; 10
+
+00000142 <i2c_put_ack_wait>:
+ 142:	4d 9b       	sbis	0x09, 5	; 9
+ 144:	fe cf       	rjmp	.-4      	; 0x142 <i2c_put_ack_wait>
+ 146:	9c df       	rcall	.-200    	; 0x80 <i2c_delay_T2>
+ 148:	87 2f       	mov	r24, r23
+ 14a:	99 27       	eor	r25, r25
+ 14c:	08 95       	ret
+
+0000014e <main>:
+
+#define Dev24C02  0xA2      // device address of EEPROM 24C02, see datasheet
+
+
+int main(void)
+{
+ 14e:	cf 93       	push	r28
+ 150:	df 93       	push	r29
+ 152:	1f 92       	push	r1
+ 154:	cd b7       	in	r28, 0x3d	; 61
+ 156:	de b7       	in	r29, 0x3e	; 62
+    unsigned char ret;
+    
+
+    DDRB  = 0xff;                              // use all pins on port B for output 
+ 158:	8f ef       	ldi	r24, 0xFF	; 255
+ 15a:	84 b9       	out	0x04, r24	; 4
+    PORTB = 0xff;                              // (active low LED's )
+ 15c:	85 b9       	out	0x05, r24	; 5
+
+    i2c_init();                                // init I2C interface
+ 15e:	0e 94 48 00 	call	0x90	; 0x90 <i2c_init>
+
+    /* write 0x75 to eeprom address 0x05 (Byte Write) */
+    ret = i2c_start(Dev24C02+I2C_WRITE);       // set device address and write mode
+ 162:	82 ea       	ldi	r24, 0xA2	; 162
+ 164:	0e 94 4d 00 	call	0x9a	; 0x9a <i2c_start>
+    if ( ret ) {
+ 168:	88 23       	and	r24, r24
+ 16a:	21 f0       	breq	.+8      	; 0x174 <main+0x26>
+        /* failed to issue start condition, possibly no device found */
+        i2c_stop();
+ 16c:	0e 94 65 00 	call	0xca	; 0xca <i2c_stop>
+        PORTB=0x00;                            // activate all 8 LED to show error */
+ 170:	15 b8       	out	0x05, r1	; 5
+ 172:	44 c0       	rjmp	.+136    	; 0x1fc <main+0xae>
+    }else {
+        /* issuing start condition ok, device accessible */
+        i2c_write(0x05);                       // write address = 5
+ 174:	85 e0       	ldi	r24, 0x05	; 5
+ 176:	0e 94 6d 00 	call	0xda	; 0xda <i2c_write>
+        i2c_write(0x75);                       // ret=0 -> Ok, ret=1 -> no ACK 
+ 17a:	85 e7       	ldi	r24, 0x75	; 117
+ 17c:	0e 94 6d 00 	call	0xda	; 0xda <i2c_write>
+        i2c_stop();                            // set stop conditon = release bus
+ 180:	0e 94 65 00 	call	0xca	; 0xca <i2c_stop>
+
+        /* write ok, read value back from eeprom address 0x05, wait until 
+           the device is no longer busy from the previous write operation */
+        i2c_start_wait(Dev24C02+I2C_WRITE);     // set device address and write mode
+ 184:	82 ea       	ldi	r24, 0xA2	; 162
+ 186:	0e 94 5b 00 	call	0xb6	; 0xb6 <i2c_start_wait>
+        i2c_write(0x05);                        // write address = 5
+ 18a:	85 e0       	ldi	r24, 0x05	; 5
+ 18c:	0e 94 6d 00 	call	0xda	; 0xda <i2c_write>
+        i2c_rep_start(Dev24C02+I2C_READ);       // set device address and read mode
+ 190:	83 ea       	ldi	r24, 0xA3	; 163
+ 192:	0e 94 51 00 	call	0xa2	; 0xa2 <i2c_rep_start>
+        ret = i2c_readNak();                    // read one byte
+ 196:	0e 94 89 00 	call	0x112	; 0x112 <i2c_readNak>
+        i2c_stop();
+ 19a:	89 83       	std	Y+1, r24	; 0x01
+ 19c:	0e 94 65 00 	call	0xca	; 0xca <i2c_stop>
+        
+        PORTB = ~ret;                           // output byte on the LED's
+ 1a0:	89 81       	ldd	r24, Y+1	; 0x01
+ 1a2:	80 95       	com	r24
+ 1a4:	85 b9       	out	0x05, r24	; 5
+
+        /* write 0x70,0x71,072,073 to eeprom address 0x00..0x03 (Page Write),
+           wait until the device is no longer busy from the previous write operation */
+        i2c_start_wait(Dev24C02+I2C_WRITE);     // set device address and write mode
+ 1a6:	82 ea       	ldi	r24, 0xA2	; 162
+ 1a8:	0e 94 5b 00 	call	0xb6	; 0xb6 <i2c_start_wait>
+        i2c_write(0x00);                        // write start address = 0
+ 1ac:	80 e0       	ldi	r24, 0x00	; 0
+ 1ae:	0e 94 6d 00 	call	0xda	; 0xda <i2c_write>
+        i2c_write(0x70);                        // write data to address 0
+ 1b2:	80 e7       	ldi	r24, 0x70	; 112
+ 1b4:	0e 94 6d 00 	call	0xda	; 0xda <i2c_write>
+        i2c_write(0x71);                        //    "    "   "    "    1
+ 1b8:	81 e7       	ldi	r24, 0x71	; 113
+ 1ba:	0e 94 6d 00 	call	0xda	; 0xda <i2c_write>
+        i2c_write(0x72);                        //    "    "   "    "    2
+ 1be:	82 e7       	ldi	r24, 0x72	; 114
+ 1c0:	0e 94 6d 00 	call	0xda	; 0xda <i2c_write>
+        i2c_write(0x74);                        //    "    "   "    "    3
+ 1c4:	84 e7       	ldi	r24, 0x74	; 116
+ 1c6:	0e 94 6d 00 	call	0xda	; 0xda <i2c_write>
+        i2c_stop();                             // set stop conditon = release bus
+ 1ca:	0e 94 65 00 	call	0xca	; 0xca <i2c_stop>
+    
+        /* write ok, read value back from eeprom address 0..3 (Sequencial Read),
+           wait until the device is no longer busy from the previous write operation */
+        i2c_start_wait(Dev24C02+I2C_WRITE);      // set device address and write mode
+ 1ce:	82 ea       	ldi	r24, 0xA2	; 162
+ 1d0:	0e 94 5b 00 	call	0xb6	; 0xb6 <i2c_start_wait>
+        i2c_write(0x00);                         // write address = 0
+ 1d4:	80 e0       	ldi	r24, 0x00	; 0
+ 1d6:	0e 94 6d 00 	call	0xda	; 0xda <i2c_write>
+        i2c_rep_start(Dev24C02+I2C_READ);        // set device address and read mode
+ 1da:	83 ea       	ldi	r24, 0xA3	; 163
+ 1dc:	0e 94 51 00 	call	0xa2	; 0xa2 <i2c_rep_start>
+        ret = i2c_readAck();                       // read one byte form address 0
+ 1e0:	0e 94 8b 00 	call	0x116	; 0x116 <i2c_readAck>
+        ret = i2c_readAck();                       //  "    "    "    "     "    1
+ 1e4:	0e 94 8b 00 	call	0x116	; 0x116 <i2c_readAck>
+        ret = i2c_readAck();                       //  "    "    "    "     "    2
+ 1e8:	0e 94 8b 00 	call	0x116	; 0x116 <i2c_readAck>
+        ret = i2c_readNak();                       //  "    "    "    "     "    3
+ 1ec:	0e 94 89 00 	call	0x112	; 0x112 <i2c_readNak>
+        i2c_stop();                              // set stop condition = release bus
+ 1f0:	89 83       	std	Y+1, r24	; 0x01
+ 1f2:	0e 94 65 00 	call	0xca	; 0xca <i2c_stop>
+    
+        PORTB = ~ret;                            // output byte on the LED's        
+ 1f6:	89 81       	ldd	r24, Y+1	; 0x01
+ 1f8:	80 95       	com	r24
+ 1fa:	85 b9       	out	0x05, r24	; 5
+    }
+    
+    for(;;);	
+ 1fc:	ff cf       	rjmp	.-2      	; 0x1fc <main+0xae>
+
+000001fe <_exit>:
+ 1fe:	f8 94       	cli
+
+00000200 <__stop_program>:
+ 200:	ff cf       	rjmp	.-2      	; 0x200 <__stop_program>
