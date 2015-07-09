@@ -6,6 +6,11 @@
 #define F_CPU 8000000UL
 #define DS1307 0xD0
 
+#define TRUE 1
+#define FALSE 0
+
+#define BUZZER (1<<PB0) //buzzer is on PB0
+
 //segements of seven segment display
 #define A_SEG (1<<PD0)
 #define B_SEG (1<<PD4)
@@ -24,7 +29,7 @@
 void dummy_read(void);
 void draw(unsigned char, unsigned char);
 void rtc_write(uint8_t*);
-	
+void alarm(uint8_t);
 
 int main(void){
 
@@ -36,8 +41,7 @@ int main(void){
 						0x01,    //5: month
 						0x15,    //6: year
 	};
-	//unsigned char digit[4] = {9, 8, 7, 6};
-
+	unsigned char digit[4] = {9, 8, 7, 6};
 	uint16_t inputs; //each switch is a bit
 
 	i2c_init();          // initialize I2C library
@@ -164,4 +168,12 @@ void rtc_write(uint8_t *data){
 
 void input_test(){
 
+}
+
+void alarm(uint8_t on){
+    if (on){
+	PORTB |= BUZZER; // turn on alarm
+    }else{
+	PORTB &= ~BUZZER;
+    }
 }
